@@ -1,12 +1,13 @@
-﻿namespace NAVASS
-{
-	public partial class App : Application
-	{
-		public App()
-		{
-			InitializeComponent();
+﻿using NAVASS.ViewModels;
 
-			MainPage = new AppShell();
-		}
+namespace NAVASS;
+
+public partial class App : Application
+{
+	public App(MainPageViewModel vm)
+	{
+		InitializeComponent();
+
+		MainPage = new AppShell();
 	}
 }
