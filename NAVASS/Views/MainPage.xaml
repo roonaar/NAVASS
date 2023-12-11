@@ -56,8 +56,9 @@
 			<Label Grid.Row="3" Grid.ColumnSpan="2" HorizontalOptions="Center" Padding="10">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="STB " TextColor="YellowGreen"/>
-						<Span Text="{Binding Kurssavvik}" FontAttributes="Bold"/>
+						<Span Text="{Binding Kursavvik_side} " TextColor="{Binding Kursavvik_side_farge}"/>
+						<Span Text=" "/>
+						<Span Text="{Binding Kursavvik, StringFormat='{0:F2}'}" FontAttributes="Bold"/>
 						<Span Text=" nm"/>
 					</FormattedString>
 				</Label.FormattedText>
@@ -69,7 +70,7 @@
 					<SwipeView HeightRequest="80" Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem Text="Start" BackgroundColor="PowderBlue"/>
+								<SwipeItem Text="{Binding Firestrek_text}" BackgroundColor="PowderBlue" Command="{Binding FirestrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
@@ -77,7 +78,7 @@
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Passeringsavstand}" FontSize="Large" FontAttributes="Bold"/>
+										<Span Text="{Binding Passeringsavstand, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
 										<Span Text=" nm"/>
 									</FormattedString>
 								</Label.FormattedText>
@@ -106,31 +107,56 @@
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
-							<Button x:Name="planlagt" Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SettPasseringsavstandCommand}"/>
+							<Button Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SettPasseringsavstandCommand}"/>
 						</FlexLayout>
 					</SwipeView>
 				</FlexLayout>
 			</Frame>
 			<Frame WidthRequest="200" Margin="10">
 				<FlexLayout Direction="Column">
-					<Label Text="Halvstrek" TextColor="DimGray" HorizontalOptions="Center"/>
-					<Button FlexLayout.Basis="100" x:Name="halvstrek" BackgroundColor="Black" Text="0,10 nm" TextColor="WhiteSmoke" FontSize="Small"/>
-					<SwipeView HeightRequest="50">
+					<SwipeView HeightRequest="80" Padding="10">
+						<SwipeView.BottomItems>
+							<SwipeItems>
+								<SwipeItem Text="{Binding Halvstrek_text}" BackgroundColor="PowderBlue" Command="{Binding HalvstrekCommand}"/>
+							</SwipeItems>
+						</SwipeView.BottomItems>
+						<FlexLayout Direction="Column">
+							<Label Text="Halvstrek" TextColor="DimGray" HorizontalOptions="Center"/>
+							<Label HorizontalOptions="Center">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{Binding Halvstrek_dist, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
+										<Span Text=" nm"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+						</FlexLayout>
+					</SwipeView>
+					<SwipeView HeightRequest="100">
 						<SwipeView.LeftItems>
 							<SwipeItems>
-								<SwipeItem Text="BB" BackgroundColor="IndianRed"/>
+								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding SettBabordHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.LeftItems>
 						<SwipeView.RightItems>
 							<SwipeItems>
-								<SwipeItem Text="STB" BackgroundColor="YellowGreen"/>
+								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding SettStyrbordHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.RightItems>
-						<StackLayout>
-							<Label HorizontalOptions="Center" VerticalOptions="End" Text="BB" TextColor="IndianRed"/>
-						</StackLayout>
+						<FlexLayout Direction="Column" Padding="10">
+							<Label HorizontalOptions="Center" Padding="10">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{Binding HalvstrekSide} " FontSize="Small" TextColor="{Binding HalvstrekSideFarge}"/>
+										<Span Text=" "/>
+										<Span Text="{Binding HalvstrekGrader}" FontSize="Small" FontAttributes="Bold"/>
+										<Span Text=" °" FontSize="Small"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding SettAntallGraderCommand}"/>
+						</FlexLayout>
 					</SwipeView>
-					<Button FlexLayout.Basis="50" x:Name="grader" BackgroundColor="Black" Text="6 °"/>
 				</FlexLayout>
 			</Frame>
 		</StackLayout>
