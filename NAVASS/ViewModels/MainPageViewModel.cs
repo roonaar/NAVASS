@@ -110,26 +110,7 @@ public partial class MainPageViewModel : ObservableObject
 	[RelayCommand]
 	void ChooseStarboardHalvstrek() => Halvstrek.ChooseStarboard();
 
-	[ObservableProperty]
-	bool beholdenFartIsRunning = false;
-	DateTime t1;
 	[RelayCommand]
-	async Task RunBeholdenFart()
-	{
-		if (!BeholdenFartIsRunning)
-		{
-			t1 = DateTime.Now;
-			BeholdenFartIsRunning = true;
-		}
-		else
-		{
-			DateTime t2 = DateTime.Now;
-			TimeSpan t = t2 - t1;
-			double s = t.TotalSeconds;
-			double d = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Utseilt distanse", "Registrer utseilt distanse i nautiske mil:", maxLength: 4, keyboard: Keyboard.Numeric));
-
-			Navigation.Speed = d / s * 3600;
-			BeholdenFartIsRunning = false;
-		}
-	}
+	async Task RunBeholdenFart() => await Navigation.RunBeholdenFart();
+	
 }

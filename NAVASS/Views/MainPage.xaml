@@ -164,7 +164,7 @@
 		</StackLayout>
 		<Frame Grid.Row="2">
 			<FlexLayout Direction="Row">
-				<ActivityIndicator IsRunning="{Binding BeholdenFartIsRunning}" IsVisible="{Binding BeholdenFartIsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+				<ActivityIndicator IsRunning="{Binding Navigation.BeholdenFartIsRunning}" IsVisible="{Binding Navigation.BeholdenFartIsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
 				<Button Text="Mål beholden fart" Command="{Binding RunBeholdenFartCommand}"/>
 			</FlexLayout>
 		</Frame>
