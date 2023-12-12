@@ -25,7 +25,7 @@ public partial class MainPageViewModel : ObservableObject
 		updateLoopTimer.Start();
 	}
 	
-	private void Update(object sender, ElapsedEventArgs e)
+	private void Update(object? sender, ElapsedEventArgs e)
 	{
 		if(previousTickAt == DateTime.MinValue)
 		{
