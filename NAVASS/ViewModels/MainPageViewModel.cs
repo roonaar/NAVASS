@@ -2,21 +2,27 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Timers;
 
+using NAVASS.Models;
+
 namespace NAVASS.ViewModels;
 
 public partial class MainPageViewModel : ObservableObject
 {
 	private System.Timers.Timer updateLoopTimer;
+	DateTime previousTickAt = DateTime.MinValue;
+	TimeSpan deltaTime = TimeSpan.Zero;
 
 	public MainPageViewModel()
 	{
+		Navigation.DistanceTotal = 20;
+		Navigation.DistanceRemaining = 20;
+		Navigation.Speed = 12;
+
 		updateLoopTimer = new System.Timers.Timer(200);
 		updateLoopTimer.Elapsed += Update;
 		updateLoopTimer.Start();
 	}
-
-	DateTime previousTickAt = DateTime.MinValue;
-	TimeSpan deltaTime = TimeSpan.Zero;
+	
 	private void Update(object sender, ElapsedEventArgs e)
 	{
 		if(previousTickAt == DateTime.MinValue)
@@ -28,95 +34,110 @@ public partial class MainPageViewModel : ObservableObject
 		deltaTime = currentTickAt - previousTickAt;
 		previousTickAt = currentTickAt;
 
-		if (DistanseTilTurn > 0)
+		if (Navigation.DistanceRemaining > 0)
 		{
-			DistanseTilTurn -= Fart / 3600 * deltaTime.TotalSeconds;
-			TidTilTurn = TimeSpan.FromHours(DistanseTilTurn / Fart);
-			Fremgang = DistanseTilTurn / DistansePåLeg;
+			Navigation.DistanceSinceLastUpdate += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
+			Navigation.DistanceRemaining = Navigation.DistanceTotal - Navigation.DistanceSinceLastUpdate;
+			Navigation.TimeToTurn = TimeSpan.FromHours(Navigation.DistanceRemaining / Navigation.Speed);
+			Navigation.Progress = Navigation.DistanceRemaining / Navigation.DistanceTotal;
 		}
-		if (FirestrekRunning)
+		if (Firestrek.IsRunning)
 		{
-			Passeringsavstand += Fart / 3600 * deltaTime.TotalSeconds;
+			Firestrek.PassingDistance += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
 		}
-		if (HalvstrekRunning)
+		if (Halvstrek.IsRunning)
 		{
-			double distanseCurrentTick = Fart / 3600 * deltaTime.TotalSeconds * (HalvstrekGrader / 60);
-			HalvstrekDist += distanseCurrentTick;
-			if (HalvstrekSide == "BB")
+			double distanceCurrentTick = Navigation.Speed / 3600 * deltaTime.TotalSeconds * (Halvstrek.Degrees / 60);
+			Halvstrek.Distance += distanceCurrentTick;
+			if (Halvstrek.SideText == "BB")
 			{
-				Kursavvik -= distanseCurrentTick;
+				Navigation.CourseDeviation -= distanceCurrentTick;
 			}
 			else
 			{
-				Kursavvik += distanseCurrentTick;
+				Navigation.CourseDeviation += distanceCurrentTick;
 			}
 
-			KursavvikSide = Kursavvik > 0 ? "STB" : "BB";
-			if (Kursavvik < 0.005 && Kursavvik > -0.005)
+			Navigation.CourseDeviationSideText = Navigation.CourseDeviation > 0 ? "STB" : "BB";
+			if (Navigation.CourseDeviation < 0.005 && Navigation.CourseDeviation > -0.005)
 			{
-				KursavvikSide = "";
+				Navigation.CourseDeviationSideText = "";
 			}
-
-			KursavvikSideFarge = KursavvikSide == "BB" ? Colors.IndianRed : KursavvikSide == "STB" ? Colors.YellowGreen : Colors.Transparent;
+			Navigation.CourseDeviationSideTextColor = Navigation.CourseDeviationSideText == "BB" ? Colors.IndianRed : Navigation.CourseDeviationSideText == "STB" ? Colors.YellowGreen : Colors.Transparent;
 		}
 	}
 
 	[ObservableProperty]
-	double distansePåLeg = 5.0;
+	HalvstrekInfo halvstrek = new ();
 	[ObservableProperty]
-	double fremgang;
+	FirestrekInfo firestrek = new ();
 	[ObservableProperty]
-	double distanseTilTurn = 2.0;
-	[ObservableProperty]
-	TimeSpan tidTilTurn;
-	[ObservableProperty]
-	double kurs = 180.0;
-	[ObservableProperty]
-	double fart = 12.0;
-	[ObservableProperty]
-	double kursavvik = 0.0;
-	[ObservableProperty]
-	string kursavvikSide = "";
-	[ObservableProperty]
-	Color kursavvikSideFarge = Colors.Transparent;
-	[ObservableProperty]
-	double planlagtPassering = 0.0;
-	[ObservableProperty]
-	double passeringsavstand = 0.0;
-	[ObservableProperty]
-	string passeringsside = "BB";
-	[ObservableProperty]
-	Color passeringssideFarge = Colors.IndianRed;
+	NavigationalInfo navigation = new ();
 
 	[RelayCommand]
-	async Task SettPasseringsavstand() => PlanlagtPassering = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric));
+	async Task SetPlannedPassingDistance() => Firestrek.PlannedPassingDistance = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric));
 
 	[RelayCommand]
-	void SettBabordPassering()
+	void ChoosePortPassing()
 	{
-		Passeringsside = "BB";
-		PasseringssideFarge = Colors.IndianRed;
+		Firestrek.ChoosePortPassing();
 	}
 
 	[RelayCommand]
-	void SettStyrbordPassering()
+	void ChooseStarboardPassing()
 	{
-		Passeringsside = "STB";
-		PasseringssideFarge = Colors.YellowGreen;
+		Firestrek.ChooseStarboardPassing();
+	}
+
+	[RelayCommand]
+	void RunFirestrek()
+	{
+		double result = Firestrek.Run();
+		if (result != 0)
+		{
+			Navigation.CourseDeviation = result;
+		}
+	}
+
+	[RelayCommand]
+	void RunHalvstrek()
+	{
+		if (!Halvstrek.IsRunning)
+		{
+			Halvstrek.Distance = 0;
+		}
+
+		Halvstrek.IsRunning = !Halvstrek.IsRunning;
+		Halvstrek.StartStopText = Halvstrek.IsRunning ? "Stopp" : "Start";
+	}
+
+	[RelayCommand]
+	async Task ChooseDegrees() => Halvstrek.Degrees = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Antall grader", "Sett antall grader:", maxLength: 4, keyboard: Keyboard.Numeric));
+
+	[RelayCommand]
+	void ChoosePortHalvstrek()
+	{
+		Halvstrek.SideText = "BB";
+		Halvstrek.SideTextColor = Colors.IndianRed;
+	}
+
+	[RelayCommand]
+	void ChooseStarboardHalvstrek()
+	{
+		Halvstrek.SideText = "STB";
+		Halvstrek.SideTextColor = Colors.YellowGreen;
 	}
 
 	[ObservableProperty]
-	bool isRunning = false;
-
+	bool beholdenFartIsRunning = false;
 	DateTime t1;
-
 	[RelayCommand]
-	async Task BeholdenFart()
+	async Task RunBeholdenFart()
 	{
-		if (!IsRunning)
+		if (!BeholdenFartIsRunning)
 		{
 			t1 = DateTime.Now;
-			IsRunning = true;
+			BeholdenFartIsRunning = true;
 		}
 		else
 		{
@@ -125,85 +146,8 @@ public partial class MainPageViewModel : ObservableObject
 			double s = t.TotalSeconds;
 			double d = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Utseilt distanse", "Registrer utseilt distanse i nautiske mil:", maxLength: 4, keyboard: Keyboard.Numeric));
 
-			Fart = d / s * 3600;
-			IsRunning = false;
+			Navigation.Speed = d / s * 3600;
+			BeholdenFartIsRunning = false;
 		}
-	}
-
-	[ObservableProperty]
-	bool firestrekRunning = false;
-	[ObservableProperty]
-	string firestrekText = "Start";
-
-	[RelayCommand]
-	void Firestrek()
-	{
-		if (!FirestrekRunning)
-		{
-			Passeringsavstand = 0;
-		}
-		
-		if (FirestrekRunning)
-		{
-			Kursavvik = Passeringsavstand - PlanlagtPassering;
-			bool for_langt = Passeringsavstand > PlanlagtPassering;
-
-			if (Passeringsside == "BB")
-			{
-				KursavvikSide = for_langt ? "STB" : "BB";
-			}
-			else
-			{
-				KursavvikSide = for_langt ? "BB" : "STB";
-				Kursavvik *= -1;
-			}
-
-			KursavvikSideFarge = KursavvikSide == "BB" ? Colors.IndianRed : KursavvikSide == "STB" ? Colors.YellowGreen : Colors.Transparent;
-		}
-
-		FirestrekRunning = !FirestrekRunning;
-		FirestrekText = FirestrekRunning ? "Stopp" : "Start";
-	}
-
-	[ObservableProperty]
-	bool halvstrekRunning = false;
-	[ObservableProperty]
-	string halvstrekText = "Start";
-	[ObservableProperty]
-	double halvstrekDist = 0.0;
-	[ObservableProperty]
-	double halvstrekGrader = 6;
-	[ObservableProperty]
-	string halvstrekSide = "";
-	[ObservableProperty]
-	Color halvstrekSideFarge = Colors.Transparent;
-
-	[RelayCommand]
-	void Halvstrek()
-	{
-		if (!HalvstrekRunning)
-		{
-			HalvstrekDist = 0;
-		}
-
-		HalvstrekRunning = !HalvstrekRunning;
-		HalvstrekText = HalvstrekRunning ? "Stopp" : "Start";
-	}
-
-	[RelayCommand]
-	async Task SettAntallGrader() => HalvstrekGrader = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Antall grader", "Sett antall grader:", maxLength: 4, keyboard: Keyboard.Numeric));
-
-	[RelayCommand]
-	void SettBabordHalvstrek()
-	{
-		HalvstrekSide = "BB";
-		HalvstrekSideFarge = Colors.IndianRed;
-	}
-
-	[RelayCommand]
-	void SettStyrbordHalvstrek()
-	{
-		HalvstrekSide = "STB";
-		HalvstrekSideFarge = Colors.YellowGreen;
 	}
 }

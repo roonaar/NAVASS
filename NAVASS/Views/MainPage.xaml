@@ -24,7 +24,7 @@
 			<Label Grid.Row="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Large">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding Kurs}"/>
+						<Span Text="{Binding Navigation.PlannedCourse}"/>
 						<Span Text=" °"/>
 					</FormattedString>
 				</Label.FormattedText>
@@ -32,16 +32,16 @@
 			<Label Grid.Row="0" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Padding="10" FontSize="Large">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding Fart, StringFormat='{0:F1}'}"/>
+						<Span Text="{Binding Navigation.Speed, StringFormat='{0:F1}'}"/>
 						<Span Text=" kn"/>
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>
-			<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Progress="{Binding Fremgang}" FlowDirection="RightToLeft"/>
+			<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Progress="{Binding Navigation.Progress}" FlowDirection="RightToLeft"/>
 			<Label Grid.Row="2"	Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Small">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding DistanseTilTurn, StringFormat='{0:F2}'}"/>
+						<Span Text="{Binding Navigation.DistanceRemaining, StringFormat='{0:F2}'}"/>
 						<Span Text=" nm"/>
 					</FormattedString>
 				</Label.FormattedText>
@@ -49,16 +49,16 @@
 			<Label Grid.Row="2" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Padding="10" FontSize="Small">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding TidTilTurn, StringFormat='{0:hh\\:mm\\:ss}'}"/>
+						<Span Text="{Binding Navigation.TimeToTurn, StringFormat='{0:hh\\:mm\\:ss}'}"/>
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>
 			<Label Grid.Row="3" Grid.ColumnSpan="2" HorizontalOptions="Center" Padding="10">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding KursavvikSide} " TextColor="{Binding KursavvikSideFarge}"/>
+						<Span Text="{Binding Navigation.CourseDeviationSideText} " TextColor="{Binding Navigation.CourseDeviationSideTextColor}"/>
 						<Span Text=" "/>
-						<Span Text="{Binding Kursavvik, StringFormat='{0:N2}'}" FontAttributes="Bold"/>
+						<Span Text="{Binding Navigation.CourseDeviation, StringFormat='{0:N2}'}" FontAttributes="Bold"/>
 						<Span Text=" nm"/>
 					</FormattedString>
 				</Label.FormattedText>
@@ -70,7 +70,7 @@
 					<SwipeView HeightRequest="80" Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem Text="{Binding FirestrekText}" BackgroundColor="PowderBlue" Command="{Binding FirestrekCommand}"/>
+								<SwipeItem Text="{Binding Firestrek.StartStopText}" BackgroundColor="PowderBlue" Command="{Binding RunFirestrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
@@ -78,7 +78,7 @@
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Passeringsavstand, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
+										<Span Text="{Binding Firestrek.PassingDistance, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
 										<Span Text=" nm"/>
 									</FormattedString>
 								</Label.FormattedText>
@@ -88,29 +88,29 @@
 					<SwipeView HeightRequest="100">
 						<SwipeView.LeftItems>
 							<SwipeItems>
-								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding SettBabordPasseringCommand}"/>
+								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding ChoosePortPassingCommand}"/>
 							</SwipeItems>
 						</SwipeView.LeftItems>
 						<SwipeView.RightItems>
 							<SwipeItems>
-								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding SettStyrbordPasseringCommand}"/>
+								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardPassingCommand}"/>
 							</SwipeItems>
 						</SwipeView.RightItems>
 						<FlexLayout Direction="Column" Padding="10">
                             <Label HorizontalOptions="Center" Padding="10">
                                 <Label.FormattedText>
                                     <FormattedString>
-                                        <Span Text="{Binding Passeringsside} " FontSize="Small" TextColor="{Binding PasseringssideFarge}"/>
+                                        <Span Text="{Binding Firestrek.PassingSideText} " FontSize="Small" TextColor="{Binding Firestrek.PassingSideTextColor}"/>
 										<Span Text=" "/>
-										<Span Text="{Binding PlanlagtPassering}" FontSize="Small" FontAttributes="Bold"/>
+										<Span Text="{Binding Firestrek.PlannedPassingDistance}" FontSize="Small" FontAttributes="Bold"/>
                                         <Span Text=" nm"/>
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
-							<Button Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SettPasseringsavstandCommand}"/>
+							<Button Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SetPlannedPassingDistanceCommand}"/>
 						</FlexLayout>
 					</SwipeView>
-					<ActivityIndicator IsRunning="{Binding FirestrekRunning}" IsVisible="{Binding FirestrekRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<ActivityIndicator IsRunning="{Binding Firestrek.IsRunning}" IsVisible="{Binding Firestrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
 				</FlexLayout>
 			</Frame>
 			<Frame WidthRequest="200" Margin="10">
@@ -118,7 +118,7 @@
 					<SwipeView HeightRequest="80" Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem Text="{Binding HalvstrekText}" BackgroundColor="PowderBlue" Command="{Binding HalvstrekCommand}"/>
+								<SwipeItem Text="{Binding Halvstrek.StartStopText}" BackgroundColor="PowderBlue" Command="{Binding RunHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
@@ -126,7 +126,7 @@
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding HalvstrekDist, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
+										<Span Text="{Binding Halvstrek.Distance, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
 										<Span Text=" nm"/>
 									</FormattedString>
 								</Label.FormattedText>
@@ -136,36 +136,36 @@
 					<SwipeView HeightRequest="100">
 						<SwipeView.LeftItems>
 							<SwipeItems>
-								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding SettBabordHalvstrekCommand}"/>
+								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding ChoosePortHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.LeftItems>
 						<SwipeView.RightItems>
 							<SwipeItems>
-								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding SettStyrbordHalvstrekCommand}"/>
+								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.RightItems>
 						<FlexLayout Direction="Column" Padding="10">
 							<Label HorizontalOptions="Center" Padding="10">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding HalvstrekSide} " FontSize="Small" TextColor="{Binding HalvstrekSideFarge}"/>
+										<Span Text="{Binding Halvstrek.SideText} " FontSize="Small" TextColor="{Binding Halvstrek.SideTextColor}"/>
 										<Span Text=" "/>
-										<Span Text="{Binding HalvstrekGrader}" FontSize="Small" FontAttributes="Bold"/>
+										<Span Text="{Binding Halvstrek.Degrees}" FontSize="Small" FontAttributes="Bold"/>
 										<Span Text=" °" FontSize="Small"/>
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
-							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding SettAntallGraderCommand}"/>
+							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding ChooseDegreesCommand}"/>
 						</FlexLayout>
 					</SwipeView>
-					<ActivityIndicator IsRunning="{Binding HalvstrekRunning}" IsVisible="{Binding HalvstrekRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<ActivityIndicator IsRunning="{Binding Halvstrek.IsRunning}" IsVisible="{Binding Halvstrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
 				</FlexLayout>
 			</Frame>
 		</StackLayout>
 		<Frame Grid.Row="2">
 			<FlexLayout Direction="Row">
-				<ActivityIndicator IsRunning="{Binding IsRunning}" IsVisible="{Binding IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
-				<Button Text="Mål beholden fart" Command="{Binding BeholdenFartCommand}"/>
+				<ActivityIndicator IsRunning="{Binding BeholdenFartIsRunning}" IsVisible="{Binding BeholdenFartIsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+				<Button Text="Mål beholden fart" Command="{Binding RunBeholdenFartCommand}"/>
 			</FlexLayout>
 		</Frame>
 	</Grid>
