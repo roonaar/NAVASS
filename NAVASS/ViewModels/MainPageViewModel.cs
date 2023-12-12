@@ -14,9 +14,11 @@ public partial class MainPageViewModel : ObservableObject
 
 	public MainPageViewModel()
 	{
+		//Mockup data for testing
 		Navigation.DistanceTotal = 20;
 		Navigation.DistanceRemaining = 20;
 		Navigation.Speed = 12;
+		Navigation.PlannedCourse = 36;
 
 		updateLoopTimer = new System.Timers.Timer(200);
 		updateLoopTimer.Elapsed += Update;
@@ -36,6 +38,7 @@ public partial class MainPageViewModel : ObservableObject
 
 		if (Navigation.DistanceRemaining > 0)
 		{
+			//TODO: Implement Update() in NavigationalInfo
 			Navigation.DistanceSinceLastUpdate += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
 			Navigation.DistanceRemaining = Navigation.DistanceTotal - Navigation.DistanceSinceLastUpdate;
 			Navigation.TimeToTurn = TimeSpan.FromHours(Navigation.DistanceRemaining / Navigation.Speed);
@@ -43,10 +46,12 @@ public partial class MainPageViewModel : ObservableObject
 		}
 		if (Firestrek.IsRunning)
 		{
+			//TODO: Implement Update() in FirestrekInfo
 			Firestrek.PassingDistance += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
 		}
 		if (Halvstrek.IsRunning)
 		{
+			//TODO: Implement Update() in HalvstrekInfo
 			double distanceCurrentTick = Navigation.Speed / 3600 * deltaTime.TotalSeconds * (Halvstrek.Degrees / 60);
 			Halvstrek.Distance += distanceCurrentTick;
 			if (Halvstrek.SideText == "BB")
@@ -75,19 +80,13 @@ public partial class MainPageViewModel : ObservableObject
 	NavigationalInfo navigation = new ();
 
 	[RelayCommand]
-	async Task SetPlannedPassingDistance() => Firestrek.PlannedPassingDistance = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric));
+	async Task SetPlannedPassingDistance() => await Firestrek.SetPlannedPassingDistance();
 
 	[RelayCommand]
-	void ChoosePortPassing()
-	{
-		Firestrek.ChoosePortPassing();
-	}
+	void ChoosePortPassing() => Firestrek.ChoosePortPassing();
 
 	[RelayCommand]
-	void ChooseStarboardPassing()
-	{
-		Firestrek.ChooseStarboardPassing();
-	}
+	void ChooseStarboardPassing() => Firestrek.ChooseStarboardPassing();
 
 	[RelayCommand]
 	void RunFirestrek()
@@ -100,33 +99,16 @@ public partial class MainPageViewModel : ObservableObject
 	}
 
 	[RelayCommand]
-	void RunHalvstrek()
-	{
-		if (!Halvstrek.IsRunning)
-		{
-			Halvstrek.Distance = 0;
-		}
-
-		Halvstrek.IsRunning = !Halvstrek.IsRunning;
-		Halvstrek.StartStopText = Halvstrek.IsRunning ? "Stopp" : "Start";
-	}
+	void RunHalvstrek() => Halvstrek.Run();
 
 	[RelayCommand]
-	async Task ChooseDegrees() => Halvstrek.Degrees = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Antall grader", "Sett antall grader:", maxLength: 4, keyboard: Keyboard.Numeric));
+	async Task ChooseHalvstrekDegrees() => await Halvstrek.ChooseDegrees();
 
 	[RelayCommand]
-	void ChoosePortHalvstrek()
-	{
-		Halvstrek.SideText = "BB";
-		Halvstrek.SideTextColor = Colors.IndianRed;
-	}
+	void ChoosePortHalvstrek() => Halvstrek.ChoosePort();
 
 	[RelayCommand]
-	void ChooseStarboardHalvstrek()
-	{
-		Halvstrek.SideText = "STB";
-		Halvstrek.SideTextColor = Colors.YellowGreen;
-	}
+	void ChooseStarboardHalvstrek() => Halvstrek.ChooseStarboard();
 
 	[ObservableProperty]
 	bool beholdenFartIsRunning = false;

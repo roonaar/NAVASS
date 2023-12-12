@@ -4,6 +4,44 @@ namespace NAVASS.Models;
 
 public class HalvstrekInfo : ObservableObject
 {
+	public void Run()
+	{
+		if (!IsRunning)
+		{
+			Distance = 0;
+		}
+
+		IsRunning = !IsRunning;
+		StartStopText = IsRunning ? "Stopp" : "Start";
+	}
+
+	public void ChoosePort()
+	{
+		SideText = "BB";
+		SideTextColor = Colors.IndianRed;
+	}
+
+	public void ChooseStarboard()
+	{
+		SideText = "SB";
+		SideTextColor = Colors.YellowGreen;
+	}
+
+	public async Task ChooseDegrees() 
+	{
+		Application? app = Application.Current;
+		if (app == null)
+		{
+			return;
+		}
+		Page? page = app.MainPage;
+		if (page is not null)
+		{
+			string result = await page.DisplayPromptAsync("Antall grader", "Sett antall grader:", maxLength: 4, keyboard: Keyboard.Numeric);
+			Degrees = Convert.ToDouble(result);
+		}
+	}
+
 	private bool isRunning = false;
 	private string startStopText = "Start";
 	private double degrees = 6;

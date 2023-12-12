@@ -24,7 +24,7 @@
 			<Label Grid.Row="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Large">
 				<Label.FormattedText>
 					<FormattedString>
-						<Span Text="{Binding Navigation.PlannedCourse}"/>
+						<Span Text="{Binding Navigation.PlannedCourse, StringFormat='{0:000}'}"/>
 						<Span Text=" °"/>
 					</FormattedString>
 				</Label.FormattedText>
@@ -155,7 +155,7 @@
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
-							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding ChooseDegreesCommand}"/>
+							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding ChooseHalvstrekDegreesCommand}"/>
 						</FlexLayout>
 					</SwipeView>
 					<ActivityIndicator IsRunning="{Binding Halvstrek.IsRunning}" IsVisible="{Binding Halvstrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>

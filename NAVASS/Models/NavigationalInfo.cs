@@ -28,7 +28,7 @@ public class NavigationalInfo : ObservableObject
 			courseDeviation = value;
 			OnPropertyChanged(nameof(CourseDeviation));
 			CourseDeviationSideText = courseDeviation > 0 ? "SB" : "BB";
-			CourseDeviationSideTextColor = courseDeviation > 0 ? Colors.Green : Colors.Red;
+			CourseDeviationSideTextColor = courseDeviation > 0 ? Colors.YellowGreen : Colors.IndianRed;
 		}
 	}
 	public string CourseDeviationSideText {	get => courseDeviationSideText;	set	{ courseDeviationSideText = value; OnPropertyChanged(nameof(CourseDeviationSideText)); } }

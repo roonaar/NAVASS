@@ -23,19 +23,35 @@ public class FirestrekInfo : ObservableObject
 			}
 		}
 		IsRunning = !IsRunning;
+		StartStopText = IsRunning ? "Stopp" : "Start";
 		return courseDeviation;
 	}
 	public void ChooseStarboardPassing()
 	{
 		PassingSideText = "SB";
-		PassingSideTextColor = Colors.Green;
+		PassingSideTextColor = Colors.YellowGreen;
 
 	}
 	public void ChoosePortPassing()
 	{
 		PassingSideText = "BB";
-		PassingSideTextColor = Colors.Red;
+		PassingSideTextColor = Colors.IndianRed;
 	}
+
+	public async Task SetPlannedPassingDistance() 
+	{
+		Application? app = Application.Current;
+		if (app is null)
+		{
+			return;
+		}
+		Page? page = app.MainPage;
+		if (page is not null)
+		{
+			string result = await page.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric);
+			PlannedPassingDistance = Convert.ToDouble(result);
+		}
+	} 
 
 	private bool isRunning = false;
 	private string startStopText = "Start";
@@ -50,14 +66,6 @@ public class FirestrekInfo : ObservableObject
 		{ 
 			isRunning = value;
 			OnPropertyChanged(nameof(IsRunning));
-			if (isRunning)
-			{
-				StartStopText = "Stop";
-			}
-			else
-			{
-				StartStopText = "Start";
-			}
 		} }
 	public string StartStopText
 	{
