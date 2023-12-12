@@ -15,59 +15,60 @@ public partial class MainPageViewModel : ObservableObject
 		updateLoopTimer.Start();
 	}
 
-	DateTime previous_tick_at;
-	TimeSpan delta_time = TimeSpan.FromSeconds(1);
+	DateTime previousTickAt = DateTime.MinValue;
+	TimeSpan deltaTime = TimeSpan.Zero;
 	private void Update(object sender, ElapsedEventArgs e)
 	{
-		if(previous_tick_at == DateTime.MinValue)
+		if(previousTickAt == DateTime.MinValue)
 		{
-			previous_tick_at = e.SignalTime;
+			previousTickAt = e.SignalTime;
 			return;
 		}
-		var current_tick_at = e.SignalTime;
-		delta_time = current_tick_at - previous_tick_at;
-		previous_tick_at = current_tick_at;
+		var currentTickAt = e.SignalTime;
+		deltaTime = currentTickAt - previousTickAt;
+		previousTickAt = currentTickAt;
 
-		if (Distanse_til_turn > 0)
+		if (DistanseTilTurn > 0)
 		{
-			Distanse_til_turn -= Fart / 3600 * delta_time.TotalSeconds;
-			Tid_til_turn = TimeSpan.FromHours(Distanse_til_turn / Fart);
-			Fremgang = Distanse_til_turn / distanse;
+			DistanseTilTurn -= Fart / 3600 * deltaTime.TotalSeconds;
+			TidTilTurn = TimeSpan.FromHours(DistanseTilTurn / Fart);
+			Fremgang = DistanseTilTurn / DistansePåLeg;
 		}
-		if (firestrek_running)
+		if (FirestrekRunning)
 		{
-			Passeringsavstand += Fart / 3600 * delta_time.TotalSeconds;
+			Passeringsavstand += Fart / 3600 * deltaTime.TotalSeconds;
 		}
-		if (halvstrek_running)
+		if (HalvstrekRunning)
 		{
-			double distanse_current_tick = Fart / 3600 * delta_time.TotalSeconds * (HalvstrekGrader / 60);
-			Halvstrek_dist += distanse_current_tick;
+			double distanseCurrentTick = Fart / 3600 * deltaTime.TotalSeconds * (HalvstrekGrader / 60);
+			HalvstrekDist += distanseCurrentTick;
 			if (HalvstrekSide == "BB")
 			{
-				Kursavvik -= distanse_current_tick;
+				Kursavvik -= distanseCurrentTick;
 			}
 			else
 			{
-				Kursavvik += distanse_current_tick;
+				Kursavvik += distanseCurrentTick;
 			}
 
-			Kursavvik_side = Kursavvik > 0 ? "STB" : "BB";
+			KursavvikSide = Kursavvik > 0 ? "STB" : "BB";
 			if (Kursavvik < 0.005 && Kursavvik > -0.005)
 			{
-				Kursavvik_side = "";
+				KursavvikSide = "";
 			}
 
-			Kursavvik_side_farge = Kursavvik_side == "BB" ? Colors.IndianRed : Kursavvik_side == "STB" ? Colors.YellowGreen : Colors.Transparent;
+			KursavvikSideFarge = KursavvikSide == "BB" ? Colors.IndianRed : KursavvikSide == "STB" ? Colors.YellowGreen : Colors.Transparent;
 		}
 	}
 
-	double distanse = 5.0;
+	[ObservableProperty]
+	double distansePåLeg = 5.0;
 	[ObservableProperty]
 	double fremgang;
 	[ObservableProperty]
-	double distanse_til_turn = 2.0;
+	double distanseTilTurn = 2.0;
 	[ObservableProperty]
-	TimeSpan tid_til_turn;
+	TimeSpan tidTilTurn;
 	[ObservableProperty]
 	double kurs = 180.0;
 	[ObservableProperty]
@@ -75,33 +76,33 @@ public partial class MainPageViewModel : ObservableObject
 	[ObservableProperty]
 	double kursavvik = 0.0;
 	[ObservableProperty]
-	string kursavvik_side = "";
+	string kursavvikSide = "";
 	[ObservableProperty]
-	Color kursavvik_side_farge = Colors.Transparent;
+	Color kursavvikSideFarge = Colors.Transparent;
 	[ObservableProperty]
-	double planlagt_passering = 0.0;
+	double planlagtPassering = 0.0;
 	[ObservableProperty]
 	double passeringsavstand = 0.0;
 	[ObservableProperty]
 	string passeringsside = "BB";
 	[ObservableProperty]
-	Color passeringsside_farge = Colors.IndianRed;
+	Color passeringssideFarge = Colors.IndianRed;
 
 	[RelayCommand]
-	async Task SettPasseringsavstand() => Planlagt_passering = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric));
+	async Task SettPasseringsavstand() => PlanlagtPassering = Convert.ToDouble(await Application.Current.MainPage.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric));
 
 	[RelayCommand]
 	void SettBabordPassering()
 	{
 		Passeringsside = "BB";
-		Passeringsside_farge = Colors.IndianRed;
+		PasseringssideFarge = Colors.IndianRed;
 	}
 
 	[RelayCommand]
 	void SettStyrbordPassering()
 	{
 		Passeringsside = "STB";
-		Passeringsside_farge = Colors.YellowGreen;
+		PasseringssideFarge = Colors.YellowGreen;
 	}
 
 	[ObservableProperty]
@@ -129,45 +130,47 @@ public partial class MainPageViewModel : ObservableObject
 		}
 	}
 
-	bool firestrek_running = false;
 	[ObservableProperty]
-	string firestrek_text = "Start";
+	bool firestrekRunning = false;
+	[ObservableProperty]
+	string firestrekText = "Start";
 
 	[RelayCommand]
 	void Firestrek()
 	{
-		if (!firestrek_running)
+		if (!FirestrekRunning)
 		{
 			Passeringsavstand = 0;
 		}
 		
-		if (firestrek_running)
+		if (FirestrekRunning)
 		{
-			Kursavvik = Passeringsavstand - Planlagt_passering;
-			bool for_langt = Passeringsavstand > Planlagt_passering;
+			Kursavvik = Passeringsavstand - PlanlagtPassering;
+			bool for_langt = Passeringsavstand > PlanlagtPassering;
 
 			if (Passeringsside == "BB")
 			{
-				Kursavvik_side = for_langt ? "STB" : "BB";
+				KursavvikSide = for_langt ? "STB" : "BB";
 			}
 			else
 			{
-				Kursavvik_side = for_langt ? "BB" : "STB";
+				KursavvikSide = for_langt ? "BB" : "STB";
 				Kursavvik *= -1;
 			}
 
-			Kursavvik_side_farge = Kursavvik_side == "BB" ? Colors.IndianRed : Kursavvik_side == "STB" ? Colors.YellowGreen : Colors.Transparent;
+			KursavvikSideFarge = KursavvikSide == "BB" ? Colors.IndianRed : KursavvikSide == "STB" ? Colors.YellowGreen : Colors.Transparent;
 		}
 
-		firestrek_running = !firestrek_running;
-		Firestrek_text = firestrek_running ? "Stopp" : "Start";
+		FirestrekRunning = !FirestrekRunning;
+		FirestrekText = FirestrekRunning ? "Stopp" : "Start";
 	}
 
-	bool halvstrek_running = false;
 	[ObservableProperty]
-	string halvstrek_text = "Start";
+	bool halvstrekRunning = false;
 	[ObservableProperty]
-	double halvstrek_dist = 0.0;
+	string halvstrekText = "Start";
+	[ObservableProperty]
+	double halvstrekDist = 0.0;
 	[ObservableProperty]
 	double halvstrekGrader = 6;
 	[ObservableProperty]
@@ -178,13 +181,13 @@ public partial class MainPageViewModel : ObservableObject
 	[RelayCommand]
 	void Halvstrek()
 	{
-		if (!halvstrek_running)
+		if (!HalvstrekRunning)
 		{
-			Halvstrek_dist = 0;
+			HalvstrekDist = 0;
 		}
 
-		halvstrek_running = !halvstrek_running;
-		Halvstrek_text = halvstrek_running ? "Stopp" : "Start";
+		HalvstrekRunning = !HalvstrekRunning;
+		HalvstrekText = HalvstrekRunning ? "Stopp" : "Start";
 	}
 
 	[RelayCommand]
