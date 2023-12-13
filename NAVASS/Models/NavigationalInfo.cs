@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 
 namespace NAVASS.Models;
 
@@ -8,7 +6,7 @@ public class NavigationalInfo : ObservableObject
 {
 	public void Update(double deltaTime)
 	{
-		if (DistanceRemaining > 0)
+		if (DistanceRemaining > 0 && Speed != 0)
 		{
 			DistanceSinceLastUpdate += Speed / 3600 * deltaTime;
 			DistanceRemaining = DistanceTotal - DistanceSinceLastUpdate;
@@ -16,13 +14,15 @@ public class NavigationalInfo : ObservableObject
 			Progress = DistanceRemaining / DistanceTotal;
 		}
 	}
+
+	private bool beholdenFartIsRunning = false;
+	public bool BeholdenFartIsRunning { get => beholdenFartIsRunning; set { beholdenFartIsRunning = value; OnPropertyChanged(nameof(BeholdenFartIsRunning)); } }
 	private DateTime t1 = DateTime.MinValue;
 	public async Task RunBeholdenFart()
 	{
 		if (!BeholdenFartIsRunning)
 		{
 			t1 = DateTime.Now;
-			BeholdenFartIsRunning = true;
 		}
 		else
 		{
@@ -39,14 +39,29 @@ public class NavigationalInfo : ObservableObject
 				string result = await page.DisplayPromptAsync("Utseilt distanse", "Registrer utseilt distanse i nautiske mil:", maxLength: 4, keyboard: Keyboard.Numeric);
 				double d = Convert.ToDouble(result);
 
-				Speed = d / s * 3600;
-				BeholdenFartIsRunning = false;
+				Speed = result != null ? d / s * 3600 : Speed;
 			}
 		}
+		BeholdenFartIsRunning = !BeholdenFartIsRunning;
+		BeholdenFartButtonImage = BeholdenFartIsRunning ? "ruler_vertical_blue.png" : "ruler_vertical.png";
 	}
-	private bool beholdenFartIsRunning = false;
-	public bool BeholdenFartIsRunning { get => beholdenFartIsRunning; set { beholdenFartIsRunning = value; OnPropertyChanged(nameof(BeholdenFartIsRunning)); } }
+	
+	public async Task SetBeholdenFart()
+	{
+		Application? app = Application.Current;
+		if (app is null)
+			return;
+		
+		Page? page = app.MainPage;
+		if (page is not null)
+		{
+			string result = await page.DisplayPromptAsync("Beholden fart", "Registrer beholden fart i knop:", maxLength: 4, keyboard: Keyboard.Numeric);
+			Speed = result != null ? Convert.ToDouble(result) : Speed;
+		}
+		
+	}
 
+	private ImageSource rulerButtonImage = "ruler_vertical.png";
 	private double plannedCourse = 0;
 	private double speed = 0;
 	private double distanceTotal = 0;
@@ -57,6 +72,8 @@ public class NavigationalInfo : ObservableObject
 	private double courseDeviation = 0;
 	private string courseDeviationSideText = "";
 	private Color courseDeviationSideTextColor = Colors.Transparent;
+	private Color beholdenFartButtonColor = Colors.Transparent;
+	
 	public double PlannedCourse { get => plannedCourse; set { plannedCourse = value; OnPropertyChanged(nameof(PlannedCourse)); } }
 	public double Speed { get => speed; set { speed = value; OnPropertyChanged(nameof(Speed)); } }
 	public double DistanceTotal { get => distanceTotal; set { distanceTotal = value; OnPropertyChanged(nameof(DistanceTotal)); } }
@@ -74,7 +91,9 @@ public class NavigationalInfo : ObservableObject
 			CourseDeviationSideTextColor = courseDeviation > 0 ? Colors.YellowGreen : Colors.IndianRed;
 		}
 	}
+	
 	public string CourseDeviationSideText {	get => courseDeviationSideText;	set	{ courseDeviationSideText = value; OnPropertyChanged(nameof(CourseDeviationSideText)); } }
+	
 	public Color CourseDeviationSideTextColor
 	{
 		get => courseDeviationSideTextColor;
@@ -82,6 +101,15 @@ public class NavigationalInfo : ObservableObject
 		{
 			courseDeviationSideTextColor = value;
 			OnPropertyChanged(nameof(CourseDeviationSideTextColor));
+		}
+	}
+
+	public ImageSource BeholdenFartButtonImage { 
+		get => rulerButtonImage;
+		set
+		{
+			rulerButtonImage = value;
+			OnPropertyChanged(nameof(BeholdenFartButtonImage));
 		}
 	}
 }

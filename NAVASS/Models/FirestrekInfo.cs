@@ -18,29 +18,26 @@ public class FirestrekInfo : ObservableObject
 		{
 			PassingDistance = 0;
 		}
-
-		if (IsRunning)
+		else
 		{
 			courseDeviation = PassingDistance - PlannedPassingDistance;
-			bool tooLong = PassingDistance > PlannedPassingDistance;
-
-			if (PassingSideText == "SB")
-			{
-				courseDeviation *= -1;
-			}
 		}
 		IsRunning = !IsRunning;
 		StartStopText = IsRunning ? "Stopp" : "Start";
-		return courseDeviation;
+		return passingSide == Side.Port ? courseDeviation : courseDeviation * -1;
 	}
+	
 	public void ChooseStarboardPassing()
 	{
+		passingSide = Side.Starboard;
 		PassingSideText = "SB";
 		PassingSideTextColor = Colors.YellowGreen;
 
 	}
+	
 	public void ChoosePortPassing()
 	{
+		passingSide = Side.Port;
 		PassingSideText = "BB";
 		PassingSideTextColor = Colors.IndianRed;
 	}
@@ -60,8 +57,10 @@ public class FirestrekInfo : ObservableObject
 		}
 	} 
 
+	private enum Side {Port, Starboard};
 	private bool isRunning = false;
 	private string startStopText = "Start";
+	private Side passingSide = Side.Starboard;
 	private string passingSideText = "";
 	private Color passingSideTextColor = Colors.Transparent;
 

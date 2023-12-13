@@ -8,7 +8,7 @@ public class HalvstrekInfo : ObservableObject
 	{
 		double distanceCurrentTick = navInfo.Speed / 3600 * deltaTime * (Degrees / 60);
 		Distance += distanceCurrentTick;
-		if (SideText == "BB")
+		if (side == Side.Port)
 		{
 			navInfo.CourseDeviation -= distanceCurrentTick;
 		}
@@ -30,12 +30,14 @@ public class HalvstrekInfo : ObservableObject
 
 	public void ChoosePort()
 	{
+		side = Side.Port;
 		SideText = "BB";
 		SideTextColor = Colors.IndianRed;
 	}
 
 	public void ChooseStarboard()
 	{
+		side = Side.Starboard;
 		SideText = "SB";
 		SideTextColor = Colors.YellowGreen;
 	}
@@ -55,9 +57,11 @@ public class HalvstrekInfo : ObservableObject
 		}
 	}
 
+	private enum Side { Port, Starboard };
 	private bool isRunning = false;
 	private string startStopText = "Start";
 	private double degrees = 6;
+	private Side side = Side.Port;
 	private string sideText = "";
 	private Color sideTextColor = Colors.Transparent;
 	private double distance = 0;

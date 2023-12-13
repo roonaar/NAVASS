@@ -92,4 +92,7 @@ public partial class MainPageViewModel : ObservableObject
 
 	[RelayCommand]
 	async Task RunBeholdenFart() => await Navigation.RunBeholdenFart();
+
+	[RelayCommand]
+	async Task SetBeholdenFart() => await Navigation.SetBeholdenFart();
 }

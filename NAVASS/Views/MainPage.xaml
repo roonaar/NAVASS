@@ -37,6 +37,9 @@
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>
+			<ImageButton Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Source="{Binding Navigation.BeholdenFartButtonImage}" HeightRequest="16" WidthRequest="16" Padding="4" Command="{Binding RunBeholdenFartCommand}" TranslationX="24" BackgroundColor="Transparent"/>
+			<ImageButton Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Source="keyboard.png" HeightRequest="16" WidthRequest="16" Padding="4" Command="{Binding SetBeholdenFartCommand}" TranslationX="-24"/>
+			<ActivityIndicator Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" IsRunning="{Binding Navigation.BeholdenFartIsRunning}" IsVisible="{Binding Navigation.BeholdenFartIsRunning}" InputTransparent="True" TranslationX="24"/>
 			<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Progress="{Binding Navigation.Progress}" FlowDirection="RightToLeft"/>
 			<Label Grid.Row="2"	Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Small">
 				<Label.FormattedText>
@@ -65,7 +68,7 @@
 			</Label>
 		</Grid>
 		<StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" Padding="10">
-			<Frame WidthRequest="200" Margin="10">
+			<Frame HeightRequest="260" WidthRequest="200" Margin="10">
 				<FlexLayout Direction="Column">
 					<SwipeView HeightRequest="80" Padding="10">
 						<SwipeView.BottomItems>
@@ -93,27 +96,27 @@
 						</SwipeView.LeftItems>
 						<SwipeView.RightItems>
 							<SwipeItems>
-								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardPassingCommand}"/>
+								<SwipeItem Text="SB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardPassingCommand}"/>
 							</SwipeItems>
 						</SwipeView.RightItems>
 						<FlexLayout Direction="Column" Padding="10">
-                            <Label HorizontalOptions="Center" Padding="10">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding Firestrek.PassingSideText} " FontSize="Small" TextColor="{Binding Firestrek.PassingSideTextColor}"/>
+							<Label HorizontalOptions="Center" Padding="10">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{Binding Firestrek.PassingSideText} " FontSize="Small" TextColor="{Binding Firestrek.PassingSideTextColor}"/>
 										<Span Text=" "/>
 										<Span Text="{Binding Firestrek.PlannedPassingDistance}" FontSize="Small" FontAttributes="Bold"/>
-                                        <Span Text=" nm"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
+										<Span Text=" nm"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
 							<Button Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SetPlannedPassingDistanceCommand}"/>
 						</FlexLayout>
 					</SwipeView>
 					<ActivityIndicator IsRunning="{Binding Firestrek.IsRunning}" IsVisible="{Binding Firestrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
 				</FlexLayout>
 			</Frame>
-			<Frame WidthRequest="200" Margin="10">
+			<Frame HeightRequest="260" WidthRequest="200" Margin="10">
 				<FlexLayout Direction="Column">
 					<SwipeView HeightRequest="80" Padding="10">
 						<SwipeView.BottomItems>
@@ -141,7 +144,7 @@
 						</SwipeView.LeftItems>
 						<SwipeView.RightItems>
 							<SwipeItems>
-								<SwipeItem Text="STB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardHalvstrekCommand}"/>
+								<SwipeItem Text="SB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.RightItems>
 						<FlexLayout Direction="Column" Padding="10">
@@ -162,12 +165,5 @@
 				</FlexLayout>
 			</Frame>
 		</StackLayout>
-		<Frame Grid.Row="2">
-			<FlexLayout Direction="Row">
-				<ActivityIndicator IsRunning="{Binding Navigation.BeholdenFartIsRunning}" IsVisible="{Binding Navigation.BeholdenFartIsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
-				<Button Text="Mål beholden fart" Command="{Binding RunBeholdenFartCommand}"/>
-			</FlexLayout>
-		</Frame>
 	</Grid>
-
 </ContentPage>
