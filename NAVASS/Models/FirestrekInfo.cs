@@ -4,6 +4,13 @@ namespace NAVASS.Models;
 
 public class FirestrekInfo : ObservableObject
 {
+	public void Update(double deltaTime, double speed)
+	{
+		if (IsRunning)
+		{
+			PassingDistance += speed / 3600 * deltaTime;
+		}
+	}
 	public double Run()
 	{
 		double courseDeviation = 0;

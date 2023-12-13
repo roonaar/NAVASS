@@ -4,6 +4,19 @@ namespace NAVASS.Models;
 
 public class HalvstrekInfo : ObservableObject
 {
+	public void Update(double deltaTime, NavigationalInfo navInfo)
+	{
+		double distanceCurrentTick = navInfo.Speed / 3600 * deltaTime * (Degrees / 60);
+		Distance += distanceCurrentTick;
+		if (SideText == "BB")
+		{
+			navInfo.CourseDeviation -= distanceCurrentTick;
+		}
+		else
+		{
+			navInfo.CourseDeviation += distanceCurrentTick;
+		}
+	}
 	public void Run()
 	{
 		if (!IsRunning)

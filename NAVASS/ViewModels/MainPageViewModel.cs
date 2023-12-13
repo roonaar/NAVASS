@@ -38,44 +38,24 @@ public partial class MainPageViewModel : ObservableObject
 
 		if (Navigation.DistanceRemaining > 0)
 		{
-			//TODO: Implement Update() in NavigationalInfo
-			Navigation.DistanceSinceLastUpdate += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
-			Navigation.DistanceRemaining = Navigation.DistanceTotal - Navigation.DistanceSinceLastUpdate;
-			Navigation.TimeToTurn = TimeSpan.FromHours(Navigation.DistanceRemaining / Navigation.Speed);
-			Navigation.Progress = Navigation.DistanceRemaining / Navigation.DistanceTotal;
+			Navigation.Update(deltaTime.TotalSeconds);
 		}
 		if (Firestrek.IsRunning)
 		{
-			//TODO: Implement Update() in FirestrekInfo
-			Firestrek.PassingDistance += Navigation.Speed / 3600 * deltaTime.TotalSeconds;
+			Firestrek.Update(deltaTime.TotalSeconds, Navigation.Speed);
 		}
 		if (Halvstrek.IsRunning)
 		{
-			//TODO: Implement Update() in HalvstrekInfo
-			double distanceCurrentTick = Navigation.Speed / 3600 * deltaTime.TotalSeconds * (Halvstrek.Degrees / 60);
-			Halvstrek.Distance += distanceCurrentTick;
-			if (Halvstrek.SideText == "BB")
-			{
-				Navigation.CourseDeviation -= distanceCurrentTick;
-			}
-			else
-			{
-				Navigation.CourseDeviation += distanceCurrentTick;
-			}
-
-			Navigation.CourseDeviationSideText = Navigation.CourseDeviation > 0 ? "STB" : "BB";
-			if (Navigation.CourseDeviation < 0.005 && Navigation.CourseDeviation > -0.005)
-			{
-				Navigation.CourseDeviationSideText = "";
-			}
-			Navigation.CourseDeviationSideTextColor = Navigation.CourseDeviationSideText == "BB" ? Colors.IndianRed : Navigation.CourseDeviationSideText == "STB" ? Colors.YellowGreen : Colors.Transparent;
+			Halvstrek.Update(deltaTime.TotalSeconds, Navigation);
 		}
 	}
 
 	[ObservableProperty]
 	HalvstrekInfo halvstrek = new ();
+
 	[ObservableProperty]
 	FirestrekInfo firestrek = new ();
+
 	[ObservableProperty]
 	NavigationalInfo navigation = new ();
 
@@ -112,5 +92,4 @@ public partial class MainPageViewModel : ObservableObject
 
 	[RelayCommand]
 	async Task RunBeholdenFart() => await Navigation.RunBeholdenFart();
-	
 }

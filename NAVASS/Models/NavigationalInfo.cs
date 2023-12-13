@@ -6,6 +6,16 @@ namespace NAVASS.Models;
 
 public class NavigationalInfo : ObservableObject
 {
+	public void Update(double deltaTime)
+	{
+		if (DistanceRemaining > 0)
+		{
+			DistanceSinceLastUpdate += Speed / 3600 * deltaTime;
+			DistanceRemaining = DistanceTotal - DistanceSinceLastUpdate;
+			TimeToTurn = TimeSpan.FromHours(DistanceRemaining / Speed);
+			Progress = DistanceRemaining / DistanceTotal;
+		}
+	}
 	private DateTime t1 = DateTime.MinValue;
 	public async Task RunBeholdenFart()
 	{
