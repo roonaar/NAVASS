@@ -24,25 +24,27 @@ public class FirestrekInfo : ObservableObject
 		}
 		IsRunning = !IsRunning;
 		StartStopText = IsRunning ? "Stopp" : "Start";
-		return passingSide == Side.Port ? courseDeviation : courseDeviation * -1;
-	}
-	
-	public void ChooseStarboardPassing()
-	{
-		passingSide = Side.Starboard;
-		PassingSideText = "SB";
-		PassingSideTextColor = Colors.YellowGreen;
-
-	}
-	
-	public void ChoosePortPassing()
-	{
-		passingSide = Side.Port;
-		PassingSideText = "BB";
-		PassingSideTextColor = Colors.IndianRed;
+		StartStopImage = IsRunning ? "circle_stop.png" : "circle_play.png";
+		return IsStarboardPassing ? courseDeviation * -1 : courseDeviation;
 	}
 
-	public async Task SetPlannedPassingDistance() 
+	public void ChooseSide(string arg)
+	{
+		if (arg == "BB")
+		{
+			IsStarboardPassing = false;
+			BBBorderColor = Colors.IndianRed;
+			SBBorderColor = Colors.Grey;
+		}
+		else
+		{
+			IsStarboardPassing = true;
+			BBBorderColor = Colors.Grey;
+			SBBorderColor = Colors.YellowGreen;
+		}
+	}
+
+	public async Task SetPlannedPassingDistance()
 	{
 		Application? app = Application.Current;
 		if (app is null)
@@ -55,24 +57,28 @@ public class FirestrekInfo : ObservableObject
 			string result = await page.DisplayPromptAsync("Passeringsavstand", "Sett planlagt passeringsavstand:", maxLength: 4, keyboard: Keyboard.Numeric);
 			PlannedPassingDistance = Convert.ToDouble(result);
 		}
-	} 
+	}
 
-	private enum Side {Port, Starboard};
+	private Color bbBorderColor = Colors.IndianRed;
+	private Color sbBorderColor = Colors.Grey;
+	private ImageSource startStopImage = "circle_play.png";
+	private bool isStarboardPassing = true;
 	private bool isRunning = false;
 	private string startStopText = "Start";
-	private Side passingSide = Side.Starboard;
-	private string passingSideText = "";
-	private Color passingSideTextColor = Colors.Transparent;
-
 	private double passingDistance = 0;
 	private double plannedPassingDistance = 0;
-	public bool IsRunning { 
+
+	public bool IsNotRunning => !IsRunning;
+	public bool IsRunning
+	{
 		get => isRunning;
-		set 
-		{ 
+		set
+		{
 			isRunning = value;
 			OnPropertyChanged(nameof(IsRunning));
-		} }
+			OnPropertyChanged(nameof(IsNotRunning));
+		}
+	}
 	public string StartStopText
 	{
 		get => startStopText;
@@ -82,20 +88,13 @@ public class FirestrekInfo : ObservableObject
 			OnPropertyChanged(nameof(StartStopText));
 		}
 	}
-	public string PassingSideText {
-		get => passingSideText;
-		private set
+	public bool IsStarboardPassing
+	{
+		get => isStarboardPassing;
+		set
 		{
-			passingSideText = value;
-			OnPropertyChanged(nameof(PassingSideText));
-		}
-	}
-	public Color PassingSideTextColor { 
-		get => passingSideTextColor;
-		private set 
-		{
-			passingSideTextColor = value;
-			OnPropertyChanged(nameof(PassingSideTextColor));
+			isStarboardPassing = value;
+			OnPropertyChanged(nameof(IsStarboardPassing));
 		}
 	}
 	public double PassingDistance
@@ -116,4 +115,16 @@ public class FirestrekInfo : ObservableObject
 			OnPropertyChanged(nameof(PlannedPassingDistance));
 		}
 	}
+
+	public ImageSource StartStopImage
+	{
+		get => startStopImage;
+		private set
+		{
+			startStopImage = value;
+			OnPropertyChanged(nameof(StartStopImage));
+		}
+	}
+	public Color BBBorderColor { get => bbBorderColor; set { bbBorderColor = value; OnPropertyChanged(nameof(BBBorderColor)); } }
+	public Color SBBorderColor { get => sbBorderColor; set { sbBorderColor = value; OnPropertyChanged(nameof(SBBorderColor)); } }
 }

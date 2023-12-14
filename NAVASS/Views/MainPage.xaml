@@ -10,122 +10,198 @@
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="2*"/>
 		</Grid.RowDefinitions>
-		<Grid Grid.Row="0">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition/>
-				<ColumnDefinition/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="2*"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
-			<Label Grid.Row="0" Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Large">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="{Binding Navigation.PlannedCourse, StringFormat='{0:000}'}"/>
-						<Span Text=" °"/>
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label Grid.Row="0" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Padding="10" FontSize="Large">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="{Binding Navigation.Speed, StringFormat='{0:F1}'}"/>
-						<Span Text=" kn"/>
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<ImageButton Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Source="{Binding Navigation.BeholdenFartButtonImage}" HeightRequest="16" WidthRequest="16" Padding="4" Command="{Binding RunBeholdenFartCommand}" TranslationX="24" BackgroundColor="Transparent"/>
-			<ImageButton Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Source="keyboard.png" HeightRequest="16" WidthRequest="16" Padding="4" Command="{Binding SetBeholdenFartCommand}" TranslationX="-24"/>
-			<ActivityIndicator Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" IsRunning="{Binding Navigation.BeholdenFartIsRunning}" IsVisible="{Binding Navigation.BeholdenFartIsRunning}" InputTransparent="True" TranslationX="24"/>
-			<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Progress="{Binding Navigation.Progress}" FlowDirection="RightToLeft"/>
-			<Label Grid.Row="2"	Grid.Column="0" HorizontalOptions="End" VerticalOptions="Center" Padding="10" FontSize="Small">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="{Binding Navigation.DistanceRemaining, StringFormat='{0:F2}'}"/>
-						<Span Text=" nm"/>
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label Grid.Row="2" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Padding="10" FontSize="Small">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="{Binding Navigation.TimeToTurn, StringFormat='{0:hh\\:mm\\:ss}'}"/>
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label Grid.Row="3" Grid.ColumnSpan="2" HorizontalOptions="Center" Padding="10">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="{Binding Navigation.CourseDeviationSideText} " TextColor="{Binding Navigation.CourseDeviationSideTextColor}"/>
-						<Span Text=" "/>
-						<Span Text="{Binding Navigation.CourseDeviation, StringFormat='{0:N2}'}" FontAttributes="Bold"/>
-						<Span Text=" nm"/>
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-		</Grid>
-		<StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" Padding="10">
-			<Frame HeightRequest="260" WidthRequest="200" Margin="10">
+		<VerticalStackLayout Grid.Row="0" 
+							 Padding="10">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<StackLayout Grid.Column="0">
+					<Label HorizontalOptions="CenterAndExpand" 
+						   FontSize="Large" 
+						   HorizontalTextAlignment="Center"
+						   Padding="10">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Navigation.PlannedCourse, StringFormat='{0:000}'}"
+									  FontAttributes="Bold"/>
+								<Span Text=" °"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+				</StackLayout>
+				<SwipeView Grid.Column="1">
+					<SwipeView.RightItems>
+						<SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
+							<SwipeItem IconImageSource="keyboard.png" 
+									   Text="Angi"
+									   Command="{Binding SetBeholdenFartCommand}"/>
+							<SwipeItem IconImageSource="ruler_vertical.png"
+									   Text="Mål"
+									   Command="{Binding RunBeholdenFartCommand}"/>
+						</SwipeItems>
+					</SwipeView.RightItems>
+					<Label HorizontalOptions="CenterAndExpand" 
+						   FontSize="Large" 
+						   HorizontalTextAlignment="Center"
+						   Padding="10">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Navigation.Speed, StringFormat='{0:N1}'}"
+									  FontAttributes="Bold"/>
+								<Span Text=" kt"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+				</SwipeView>
+			</Grid>
+			<ProgressBar Progress="{Binding Navigation.Progress}" 
+						 FlowDirection="RightToLeft"/>
+			<HorizontalStackLayout HorizontalOptions="Center"
+								   Padding="10">
+				<Label HorizontalOptions="CenterAndExpand" 
+					   FontSize="Small" 
+					   HorizontalTextAlignment="Center"
+					   Padding="10">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Navigation.DistanceRemaining, StringFormat='{0:N2}'}"
+								  FontAttributes="Bold"/>
+							<Span Text=" nm"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label HorizontalOptions="CenterAndExpand" 
+					   FontSize="Small" 
+					   HorizontalTextAlignment="Center"
+					   Padding="10">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Navigation.TimeToTurn, StringFormat='{0:hh\\:mm\\:ss}'}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+			</HorizontalStackLayout>
+			<HorizontalStackLayout HorizontalOptions="Center">
+				<Label Text="BB"
+					   FontSize="Small"
+					   TextColor="IndianRed"
+					   Margin="0,0,8,0"
+					   IsVisible="{Binding Navigation.CourseDeviationPort}"/>
+				<Label FontSize="Small" 
+					   HorizontalTextAlignment="Center">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Navigation.CourseDeviation, StringFormat='{0:N2}'}"
+								  FontAttributes="Bold"/>
+							<Span Text=" nm"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label Text="SB"
+					   FontSize="Small"
+					   TextColor="YellowGreen"
+					   Margin="8,0,0,0"
+					   IsVisible="{Binding Navigation.CourseDeviationStarboard}"/>
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+		<StackLayout Grid.Row="1" 
+					 Orientation="Horizontal" 
+					 HorizontalOptions="Center" 
+					 Padding="10">
+			<Frame HeightRequest="260" 
+				   WidthRequest="160" 
+				   Margin="10" 
+				   BackgroundColor="Transparent">
 				<FlexLayout Direction="Column">
-					<SwipeView HeightRequest="80" Padding="10">
+					<SwipeView HeightRequest="80" 
+							   Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem Text="{Binding Firestrek.StartStopText}" BackgroundColor="PowderBlue" Command="{Binding RunFirestrekCommand}"/>
+								<SwipeItem IconImageSource="{Binding Firestrek.StartStopImage}" 
+										   Text="{Binding Firestrek.StartStopText}"
+										   Command="{Binding RunFirestrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
-							<Label Text="Firestrek" TextColor="DimGray" HorizontalOptions="Center"/>
+							<Label Text="Firestrek" 
+								   TextColor="{DynamicResource SecondaryDarkText}" 
+								   HorizontalOptions="Center"/>
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Firestrek.PassingDistance, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
+										<Span Text="{Binding Firestrek.PassingDistance, StringFormat='{0:N2}'}" 
+											  FontSize="Large" 
+											  FontAttributes="Bold" />
 										<Span Text=" nm"/>
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
 						</FlexLayout>
 					</SwipeView>
-					<SwipeView HeightRequest="100">
-						<SwipeView.LeftItems>
-							<SwipeItems>
-								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding ChoosePortPassingCommand}"/>
-							</SwipeItems>
-						</SwipeView.LeftItems>
-						<SwipeView.RightItems>
-							<SwipeItems>
-								<SwipeItem Text="SB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardPassingCommand}"/>
-							</SwipeItems>
-						</SwipeView.RightItems>
-						<FlexLayout Direction="Column" Padding="10">
-							<Label HorizontalOptions="Center" Padding="10">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="{Binding Firestrek.PassingSideText} " FontSize="Small" TextColor="{Binding Firestrek.PassingSideTextColor}"/>
-										<Span Text=" "/>
-										<Span Text="{Binding Firestrek.PlannedPassingDistance}" FontSize="Small" FontAttributes="Bold"/>
-										<Span Text=" nm"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
-							<Button Text="Planlagt passering" BackgroundColor="DimGrey" Command="{Binding SetPlannedPassingDistanceCommand}"/>
-						</FlexLayout>
-					</SwipeView>
-					<ActivityIndicator IsRunning="{Binding Firestrek.IsRunning}" IsVisible="{Binding Firestrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<Label HorizontalOptions="Center" 
+				   Padding="10">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Firestrek.PlannedPassingDistance, StringFormat='{0:N2}'}" 
+							  FontSize="Small" 
+							  FontAttributes="Bold"/>
+								<Span Text=" nm" 
+							  FontSize="Small"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<HorizontalStackLayout HorizontalOptions="Center">
+						<Button Text="BB" 
+						TextColor="{DynamicResource Secondary}" 
+						BackgroundColor="Transparent"
+						Margin="2"
+						BorderWidth="2"
+						BorderColor="{Binding Firestrek.BBBorderColor}"
+						Command="{Binding ChooseFirestrekSideCommand}"
+						CommandParameter="BB"/>
+						<Button Text="SB"
+						TextColor="{DynamicResource Secondary}"
+						BackgroundColor="Transparent"
+						Margin="2"
+						BorderWidth="2"
+						BorderColor="{Binding Firestrek.SBBorderColor}"
+						Command="{Binding ChooseFirestrekSideCommand}"
+						CommandParameter="SB"/>
+					</HorizontalStackLayout>
+					<ActivityIndicator IsRunning="{Binding Firestrek.IsRunning}" 
+							   IsVisible="{Binding Firestrek.IsRunning}" 
+							   VerticalOptions="Center" 
+							   HorizontalOptions="Center"/>
+					<ImageButton Source="keyboard.png"
+						 HeightRequest="40"
+						 Aspect="AspectFit"
+						 HorizontalOptions="Center"
+						 VerticalOptions="Center"
+						 IsVisible="{Binding Firestrek.IsNotRunning}"
+						 BackgroundColor="Transparent" 
+						 Command="{Binding SetPlannedPassingDistanceCommand}"/>
 				</FlexLayout>
 			</Frame>
-			<Frame HeightRequest="260" WidthRequest="200" Margin="10">
+			<Frame HeightRequest="260" 
+				   WidthRequest="160" 
+				   Margin="10" 
+				   BackgroundColor="Transparent">
 				<FlexLayout Direction="Column">
-					<SwipeView HeightRequest="80" Padding="10">
+					<SwipeView HeightRequest="80" 
+							   Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem Text="{Binding Halvstrek.StartStopText}" BackgroundColor="PowderBlue" Command="{Binding RunHalvstrekCommand}"/>
+								<SwipeItem IconImageSource="{Binding Halvstrek.StartStopImage}" 
+										   Text="{Binding Halvstrek.StartStopText}" 
+										   Command="{Binding RunHalvstrekCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
-							<Label Text="Halvstrek" TextColor="DimGray" HorizontalOptions="Center"/>
+							<Label Text="Halvstrek" 
+								   TextColor="{DynamicResource SecondaryDarkText}" 
+								   HorizontalOptions="Center"/>
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
@@ -136,32 +212,48 @@
 							</Label>
 						</FlexLayout>
 					</SwipeView>
-					<SwipeView HeightRequest="100">
-						<SwipeView.LeftItems>
-							<SwipeItems>
-								<SwipeItem Text="BB" BackgroundColor="IndianRed" Command="{Binding ChoosePortHalvstrekCommand}"/>
-							</SwipeItems>
-						</SwipeView.LeftItems>
-						<SwipeView.RightItems>
-							<SwipeItems>
-								<SwipeItem Text="SB" BackgroundColor="YellowGreen" Command="{Binding ChooseStarboardHalvstrekCommand}"/>
-							</SwipeItems>
-						</SwipeView.RightItems>
-						<FlexLayout Direction="Column" Padding="10">
-							<Label HorizontalOptions="Center" Padding="10">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="{Binding Halvstrek.SideText} " FontSize="Small" TextColor="{Binding Halvstrek.SideTextColor}"/>
-										<Span Text=" "/>
-										<Span Text="{Binding Halvstrek.Degrees}" FontSize="Small" FontAttributes="Bold"/>
-										<Span Text=" °" FontSize="Small"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
-							<Button Text="Antall grader" BackgroundColor="DimGrey" Command="{Binding ChooseHalvstrekDegreesCommand}"/>
-						</FlexLayout>
-					</SwipeView>
-					<ActivityIndicator IsRunning="{Binding Halvstrek.IsRunning}" IsVisible="{Binding Halvstrek.IsRunning}" VerticalOptions="Center" HorizontalOptions="Center"/>
+					<Label HorizontalOptions="Center" 
+						   Padding="10">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Halvstrek.Degrees}" 
+									  FontSize="Small" 
+									  FontAttributes="Bold"/>
+								<Span Text=" °" 
+									  FontSize="Small"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<HorizontalStackLayout HorizontalOptions="Center">
+						<Button Text="BB" 
+								TextColor="{DynamicResource Secondary}" 
+								BackgroundColor="Transparent"
+								Margin="2"
+								BorderWidth="2"
+								BorderColor="{Binding Halvstrek.BBBorderColor}"
+								Command="{Binding ChooseHalvstrekSideCommand}"
+								CommandParameter="BB"/>
+						<Button Text="SB"
+								TextColor="{DynamicResource Secondary}"
+								BackgroundColor="Transparent"
+								Margin="2"
+								BorderWidth="2"
+								BorderColor="{Binding Halvstrek.SBBorderColor}"
+								Command="{Binding ChooseHalvstrekSideCommand}"
+								CommandParameter="SB"/>
+					</HorizontalStackLayout>
+					<ActivityIndicator IsRunning="{Binding Halvstrek.IsRunning}" 
+									   IsVisible="{Binding Halvstrek.IsRunning}" 
+									   VerticalOptions="Center" 
+									   HorizontalOptions="Center"/>
+					<ImageButton Source="keyboard.png"
+								 HeightRequest="40"
+								 Aspect="AspectFit"
+								 HorizontalOptions="Center"
+								 VerticalOptions="Center"
+								 IsVisible="{Binding Halvstrek.IsNotRunning}"
+								 BackgroundColor="Transparent" 
+								 Command="{Binding ChooseHalvstrekDegreesCommand}"/>
 				</FlexLayout>
 			</Frame>
 		</StackLayout>

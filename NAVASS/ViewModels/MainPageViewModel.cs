@@ -1,12 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Timers;
-
 using NAVASS.Models;
+using System.ComponentModel;
+using System.Timers;
+using System.Windows.Input;
 
 namespace NAVASS.ViewModels;
 
-public partial class MainPageViewModel : ObservableObject
+public partial class MainPageViewModel : ObservableObject, INotifyPropertyChanged
 {
 	private System.Timers.Timer updateLoopTimer;
 	DateTime previousTickAt = DateTime.MinValue;
@@ -23,11 +24,33 @@ public partial class MainPageViewModel : ObservableObject
 		updateLoopTimer = new System.Timers.Timer(200);
 		updateLoopTimer.Elapsed += Update;
 		updateLoopTimer.Start();
+
+		ChooseHalvstrekSideCommand = new RelayCommand<string>(
+			execute: (string? arg) =>
+			{
+				if (arg is null)
+				{
+					return;
+				}
+				Halvstrek.ChooseSide(arg);
+			});
+		ChooseFirestrekSideCommand = new RelayCommand<string>(
+			execute: (string? arg) =>
+			{
+				if (arg is null)
+				{
+					return;
+				}
+				Firestrek.ChooseSide(arg);
+			});
 	}
-	
+
+	public ICommand ChooseHalvstrekSideCommand { private set; get; }
+	public ICommand ChooseFirestrekSideCommand { private set; get; }
+
 	private void Update(object? sender, ElapsedEventArgs e)
 	{
-		if(previousTickAt == DateTime.MinValue)
+		if (previousTickAt == DateTime.MinValue)
 		{
 			previousTickAt = e.SignalTime;
 			return;
@@ -51,22 +74,16 @@ public partial class MainPageViewModel : ObservableObject
 	}
 
 	[ObservableProperty]
-	HalvstrekInfo halvstrek = new ();
+	HalvstrekInfo halvstrek = new();
 
 	[ObservableProperty]
-	FirestrekInfo firestrek = new ();
+	FirestrekInfo firestrek = new();
 
 	[ObservableProperty]
-	NavigationalInfo navigation = new ();
+	NavigationalInfo navigation = new();
 
 	[RelayCommand]
 	async Task SetPlannedPassingDistance() => await Firestrek.SetPlannedPassingDistance();
-
-	[RelayCommand]
-	void ChoosePortPassing() => Firestrek.ChoosePortPassing();
-
-	[RelayCommand]
-	void ChooseStarboardPassing() => Firestrek.ChooseStarboardPassing();
 
 	[RelayCommand]
 	void RunFirestrek()
@@ -83,12 +100,6 @@ public partial class MainPageViewModel : ObservableObject
 
 	[RelayCommand]
 	async Task ChooseHalvstrekDegrees() => await Halvstrek.ChooseDegrees();
-
-	[RelayCommand]
-	void ChoosePortHalvstrek() => Halvstrek.ChoosePort();
-
-	[RelayCommand]
-	void ChooseStarboardHalvstrek() => Halvstrek.ChooseStarboard();
 
 	[RelayCommand]
 	async Task RunBeholdenFart() => await Navigation.RunBeholdenFart();

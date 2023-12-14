@@ -38,6 +38,10 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -52,6 +56,9 @@
 		<MauiImage Update="Resources\Images\ruler_vertical.svg" Resize="False" TintColor="White" />
 		<MauiImage Update="Resources\Images\ruler_vertical_blue.svg" Resize="False" TintColor="LightSkyBlue" />
 		<MauiImage Update="Resources\Images\keyboard.svg" Resize="False" TintColor="White" />
+		<MauiImage Update="Resources\Images\circle_play.svg" Resize="False" TintColor="White" />
+		<MauiImage Update="Resources\Images\circle_stop.svg" Resize="False" TintColor="LightSkyBlue" />
+		
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
@@ -61,6 +68,8 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\arrows.svg" />
+	  <None Remove="Resources\Images\circle_play.svg" />
+	  <None Remove="Resources\Images\circle_stop.svg" />
 	  <None Remove="Resources\Images\keyboard.svg" />
 	  <None Remove="Resources\Images\ruler_vertical.svg" />
 	  <None Remove="Resources\Images\ruler_vertical_blue.svg" />

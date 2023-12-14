@@ -8,13 +8,13 @@ public class HalvstrekInfo : ObservableObject
 	{
 		double distanceCurrentTick = navInfo.Speed / 3600 * deltaTime * (Degrees / 60);
 		Distance += distanceCurrentTick;
-		if (side == Side.Port)
+		if (IsStarboard)
 		{
-			navInfo.CourseDeviation -= distanceCurrentTick;
+			navInfo.CourseDeviation += distanceCurrentTick;
 		}
 		else
 		{
-			navInfo.CourseDeviation += distanceCurrentTick;
+			navInfo.CourseDeviation -= distanceCurrentTick;
 		}
 	}
 	public void Run()
@@ -26,23 +26,10 @@ public class HalvstrekInfo : ObservableObject
 
 		IsRunning = !IsRunning;
 		StartStopText = IsRunning ? "Stopp" : "Start";
+		StartStopImage = IsRunning ? "circle_stop.png" : "circle_play.png";
 	}
 
-	public void ChoosePort()
-	{
-		side = Side.Port;
-		SideText = "BB";
-		SideTextColor = Colors.IndianRed;
-	}
-
-	public void ChooseStarboard()
-	{
-		side = Side.Starboard;
-		SideText = "SB";
-		SideTextColor = Colors.YellowGreen;
-	}
-
-	public async Task ChooseDegrees() 
+	public async Task ChooseDegrees()
 	{
 		Application? app = Application.Current;
 		if (app == null)
@@ -57,18 +44,38 @@ public class HalvstrekInfo : ObservableObject
 		}
 	}
 
-	private enum Side { Port, Starboard };
+	public void ChooseSide(string side)
+	{
+		if (side == "BB")
+		{
+			IsStarboard = false;
+			BBBorderColor = Colors.IndianRed;
+			SBBorderColor = Colors.Grey;
+		}
+		else
+		{
+			IsStarboard = true;
+			BBBorderColor = Colors.Grey;
+			SBBorderColor = Colors.YellowGreen;
+		}
+	}
+
+	private ImageSource startStopImage = "circle_play.png";
+	private bool isStarboard = false;
 	private bool isRunning = false;
 	private string startStopText = "Start";
 	private double degrees = 6;
-	private Side side = Side.Port;
-	private string sideText = "";
-	private Color sideTextColor = Colors.Transparent;
 	private double distance = 0;
-	public bool IsRunning { get => isRunning; set { isRunning = value; OnPropertyChanged(nameof(IsRunning)); } }
+	private Color bbBorderColor = Colors.IndianRed;
+	private Color sbBorderColor = Colors.Grey;
+
+	public bool IsStarboard { get => isStarboard; set { isStarboard = value; OnPropertyChanged(nameof(IsStarboard)); } }
+	public bool IsNotRunning => !IsRunning;
+	public bool IsRunning { get => isRunning; set { isRunning = value; OnPropertyChanged(nameof(IsRunning)); OnPropertyChanged(nameof(IsNotRunning)); } }
 	public string StartStopText { get => startStopText; set { startStopText = value; OnPropertyChanged(nameof(StartStopText)); } }
 	public double Degrees { get => degrees; set { degrees = value; OnPropertyChanged(nameof(Degrees)); } }
-	public string SideText { get => sideText; set { sideText = value; OnPropertyChanged(nameof(SideText)); } }
-	public Color SideTextColor { get => sideTextColor; set { sideTextColor = value; OnPropertyChanged(nameof(SideTextColor)); } }
 	public double Distance { get => distance; set { distance = value; OnPropertyChanged(nameof(Distance)); } }
+	public ImageSource StartStopImage { get => startStopImage; set { startStopImage = value; OnPropertyChanged(nameof(StartStopImage)); } }
+	public Color BBBorderColor { get => bbBorderColor; set { bbBorderColor = value; OnPropertyChanged(nameof(BBBorderColor)); } }
+	public Color SBBorderColor { get => sbBorderColor; set { sbBorderColor = value; OnPropertyChanged(nameof(SBBorderColor)); } }
 }
