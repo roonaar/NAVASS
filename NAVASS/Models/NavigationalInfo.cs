@@ -15,12 +15,12 @@ public class NavigationalInfo : ObservableObject
 		}
 	}
 
-	private bool beholdenFartIsRunning = false;
-	public bool BeholdenFartIsRunning { get => beholdenFartIsRunning; set { beholdenFartIsRunning = value; OnPropertyChanged(nameof(BeholdenFartIsRunning)); } }
+	private bool isBeholdenFartRunning = false;
+	public bool IsBeholdenFartRunning { get => isBeholdenFartRunning; set { isBeholdenFartRunning = value; OnPropertyChanged(nameof(IsBeholdenFartRunning)); } }
 	private DateTime t1 = DateTime.MinValue;
 	public async Task RunBeholdenFart()
 	{
-		if (!BeholdenFartIsRunning)
+		if (!IsBeholdenFartRunning)
 		{
 			t1 = DateTime.Now;
 		}
@@ -42,7 +42,7 @@ public class NavigationalInfo : ObservableObject
 				Speed = result != null ? d / s * 3600 : Speed;
 			}
 		}
-		BeholdenFartIsRunning = !BeholdenFartIsRunning;
+		IsBeholdenFartRunning = !IsBeholdenFartRunning;
 	}
 
 	public async Task SetBeholdenFart()
@@ -85,8 +85,8 @@ public class NavigationalInfo : ObservableObject
 		{
 			courseDeviation = value;
 			OnPropertyChanged(nameof(CourseDeviation));
-			CourseDeviationStarboard = courseDeviation > 0.005 ? true : false;
-			CourseDeviationPort = courseDeviation < -0.005 ? true : false;
+			CourseDeviationStarboard = courseDeviation > 0.005;
+			CourseDeviationPort = courseDeviation < -0.005;
 		}
 	}
 

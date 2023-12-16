@@ -4,15 +4,10 @@
              x:Class="NAVASS.Views.MainPage"
 			 xmlns:viewmodel="clr-namespace:NAVASS.ViewModels"
 			 x:DataType="viewmodel:MainPageViewModel">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"/>
-			<RowDefinition Height="2*"/>
-			<RowDefinition Height="2*"/>
-		</Grid.RowDefinitions>
+	<Grid RowDefinitions="auto, 2*,2*">
 		<VerticalStackLayout Grid.Row="0" 
 							 Padding="10">
-			<Grid ColumnDefinitions="auto, auto">
+			<Grid ColumnDefinitions="*, *">
 				<StackLayout Grid.Column="0">
 					<Label HorizontalOptions="CenterAndExpand" 
 						   FontSize="Large" 
@@ -32,24 +27,28 @@
 						<SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
 							<SwipeItem IconImageSource="keyboard.png" 
 									   Text="Angi"
+									   BackgroundColor="{StaticResource PrimaryDark}"
 									   Command="{Binding SetBeholdenFartCommand}"/>
 							<SwipeItem IconImageSource="ruler_vertical.png"
 									   Text="Mål"
+									   BackgroundColor="{StaticResource PrimaryDark}"
 									   Command="{Binding RunBeholdenFartCommand}"/>
 						</SwipeItems>
 					</SwipeView.RightItems>
-					<Label HorizontalOptions="CenterAndExpand" 
-						   FontSize="Large" 
-						   HorizontalTextAlignment="Center"
-						   Padding="10">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Navigation.Speed, StringFormat='{0:N1}'}"
-									  FontAttributes="Bold"/>
-								<Span Text=" kt"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+					<Grid>
+						<Label HorizontalOptions="CenterAndExpand" 
+							   FontSize="Large" 
+							   HorizontalTextAlignment="Center"
+							   Padding="10">
+							<Label.FormattedText>
+								<FormattedString>
+									<Span Text="{Binding Navigation.Speed, StringFormat='{0:N1}'}"
+										  FontAttributes="Bold"/>
+									<Span Text=" kt"/>
+								</FormattedString>
+							</Label.FormattedText>
+						</Label>
+					</Grid>
 				</SwipeView>
 			</Grid>
 			<ProgressBar Progress="{Binding Navigation.Progress}" 
@@ -201,7 +200,9 @@
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Halvstrek.Distance, StringFormat='{0:N2}'}" FontSize="Large" FontAttributes="Bold" />
+										<Span Text="{Binding Halvstrek.Distance, StringFormat='{0:N2}'}" 
+											  FontSize="Large" 
+											  FontAttributes="Bold" />
 										<Span Text=" nm"/>
 									</FormattedString>
 								</Label.FormattedText>

@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NAVASS.Models;
+
 using System.ComponentModel;
 using System.Timers;
 using System.Windows.Input;
+
+using NAVASS.Models;
 
 namespace NAVASS.ViewModels;
 
@@ -43,7 +45,7 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 	[ObservableProperty]
 	NavigationalInfo navigation = new();
 
-	private System.Timers.Timer updateLoopTimer;
+	private readonly System.Timers.Timer updateLoopTimer;
 	DateTime previousTickAt = DateTime.MinValue;
 	TimeSpan deltaTime = TimeSpan.Zero;
 
@@ -83,6 +85,7 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 			});
 	}
 
+
 	//Code for halvstrek functionality
 	[RelayCommand]
 	async Task ChooseHalvstrekDegrees() => await Halvstrek.ChooseDegrees();
@@ -119,7 +122,9 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 		}
 	}
 
+
 	//Code for firestrek functionality
+
 	[RelayCommand]
 	async Task SetPlannedPassingDistance() => await Firestrek.SetPlannedPassingDistance();
 
@@ -159,9 +164,14 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 		}
 	}
 
+
 	//Code for beholden fart functionality
+
 	[RelayCommand]
-	async Task RunBeholdenFart() => await Navigation.RunBeholdenFart();
+	async Task RunBeholdenFart()
+	{
+		await Navigation.RunBeholdenFart();
+	}
 
 	[RelayCommand]
 	async Task SetBeholdenFart() => await Navigation.SetBeholdenFart();
