@@ -114,9 +114,9 @@
 							   Padding="10">
 						<SwipeView.BottomItems>
 							<SwipeItems>
-								<SwipeItem IconImageSource="{Binding FirestrekStartStopImage}" 
-										   Text="{Binding FirestrekStartStopText}"
-										   Command="{Binding RunFirestrekCommand}"/>
+								<SwipeItem IconImageSource="{Binding FourPointFixStartStopImage}" 
+										   Text="{Binding FourPointFixStartStopText}"
+										   Command="{Binding RunFourPointFixCommand}"/>
 							</SwipeItems>
 						</SwipeView.BottomItems>
 						<FlexLayout Direction="Column">
@@ -126,7 +126,7 @@
 							<Label HorizontalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding Firestrek.PassingDistance, StringFormat='{0:N2}'}" 
+										<Span Text="{Binding FourPointFix.PassingDistance, StringFormat='{0:N2}'}" 
 											  FontSize="Large" 
 											  FontAttributes="Bold" />
 										<Span Text=" nm"/>
@@ -139,7 +139,7 @@
 				   Padding="10">
 						<Label.FormattedText>
 							<FormattedString>
-								<Span Text="{Binding Firestrek.PlannedPassingDistance, StringFormat='{0:N2}'}" 
+								<Span Text="{Binding FourPointFix.PlannedPassingDistance, StringFormat='{0:N2}'}" 
 							  FontSize="Small" 
 							  FontAttributes="Bold"/>
 								<Span Text=" nm" 
@@ -153,20 +153,20 @@
 						BackgroundColor="Transparent"
 						Margin="2"
 						BorderWidth="2"
-						BorderColor="{Binding FirestrekBBButtonColor}"
-						Command="{Binding ChooseFirestrekSideCommand}"
-						CommandParameter="BB"/>
+						BorderColor="{Binding FourPointFixPSButtonColor}"
+						Command="{Binding ChooseFourPointFixSideCommand}"
+						CommandParameter="PS"/>
 						<Button Text="SB"
 						TextColor="{DynamicResource Secondary}"
 						BackgroundColor="Transparent"
 						Margin="2"
 						BorderWidth="2"
-						BorderColor="{Binding FirestrekSBButtonColor}"
-						Command="{Binding ChooseFirestrekSideCommand}"
-						CommandParameter="SB"/>
+						BorderColor="{Binding FourPointFixSSButtonColor}"
+						Command="{Binding ChooseFourPointFixSideCommand}"
+						CommandParameter="SS"/>
 					</HorizontalStackLayout>
-					<ActivityIndicator IsRunning="{Binding Firestrek.IsRunning}" 
-							   IsVisible="{Binding Firestrek.IsRunning}" 
+					<ActivityIndicator IsRunning="{Binding FourPointFix.IsRunning}" 
+							   IsVisible="{Binding FourPointFix.IsRunning}" 
 							   VerticalOptions="Center" 
 							   HorizontalOptions="Center"/>
 					<ImageButton Source="keyboard.png"
@@ -174,7 +174,7 @@
 						 Aspect="AspectFit"
 						 HorizontalOptions="Center"
 						 VerticalOptions="Center"
-						 IsVisible="{Binding Firestrek.IsNotRunning}"
+						 IsVisible="{Binding FourPointFix.IsNotRunning}"
 						 BackgroundColor="Transparent" 
 						 Command="{Binding SetPlannedPassingDistanceCommand}"/>
 				</FlexLayout>

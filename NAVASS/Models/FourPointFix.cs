@@ -2,7 +2,7 @@
 
 namespace NAVASS.Models;
 
-public class FirestrekInfo : ObservableObject
+public class FourPointFix: ObservableObject
 {
 	public void Update(double deltaTime, double speed)
 	{
@@ -28,7 +28,7 @@ public class FirestrekInfo : ObservableObject
 
 	public void ChooseSide(string arg)
 	{
-		if (arg == "BB")
+		if (arg == "PS")
 		{
 			IsStarboardPassing = false;
 		}

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using System.ComponentModel;
 using System.Timers;
 using System.Windows.Input;
 
@@ -9,7 +8,7 @@ using NAVASS.Models;
 
 namespace NAVASS.ViewModels;
 
-public partial class MainPageViewModel : ObservableObject, INotifyPropertyChanged
+public partial class MainPageViewModel : ObservableObject
 {
 	private void Update(object? sender, ElapsedEventArgs e)
 	{
@@ -26,9 +25,9 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 		{
 			Navigation.Update(deltaTime.TotalSeconds);
 		}
-		if (Firestrek.IsRunning)
+		if (FourPointFix.IsRunning)
 		{
-			Firestrek.Update(deltaTime.TotalSeconds, Navigation.Speed);
+			FourPointFix.Update(deltaTime.TotalSeconds, Navigation.Speed);
 		}
 		if (Halvstrek.IsRunning)
 		{
@@ -40,7 +39,7 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 	HalvstrekInfo halvstrek = new();
 
 	[ObservableProperty]
-	FirestrekInfo firestrek;
+	FourPointFix fourPointFix;
 
 	[ObservableProperty]
 	NavigationalInfo navigation = new();
@@ -57,7 +56,9 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 		Navigation.Speed = 12;
 		Navigation.PlannedCourse = 36;
 
-		Firestrek = new FirestrekInfo();
+		FourPointFix = new FourPointFix();
+		UpdateFourPointFixButtons();
+		UpdateHalvstrekButtons();
 
 		updateLoopTimer = new System.Timers.Timer(200);
 		updateLoopTimer.Elapsed += Update;
@@ -73,15 +74,15 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 				Halvstrek.ChooseSide(arg);
 				UpdateHalvstrekButtons();
 			});
-		ChooseFirestrekSideCommand = new RelayCommand<string>(
+		ChooseFourPointFixSideCommand = new RelayCommand<string>(
 			execute: (string? arg) =>
 			{
 				if (arg is null)
 				{
 					return;
 				}
-				Firestrek.ChooseSide(arg);
-				UpdateFirestrekButtons();
+				FourPointFix.ChooseSide(arg);
+				UpdateFourPointFixButtons();
 			});
 	}
 
@@ -123,44 +124,44 @@ public partial class MainPageViewModel : ObservableObject, INotifyPropertyChange
 	}
 
 
-	//Code for firestrek functionality
+	//Code for four point fix functionality
 
 	[RelayCommand]
-	async Task SetPlannedPassingDistance() => await Firestrek.SetPlannedPassingDistance();
+	async Task SetPlannedPassingDistance() => await FourPointFix.SetPlannedPassingDistance();
 
 	[ObservableProperty]
-	string firestrekStartStopText = "Start";
+	string fourPointFixStartStopText = "Start";
 	[ObservableProperty]
-	ImageSource firestrekStartStopImage = "circle_play.png";
+	ImageSource fourPointFixStartStopImage = "circle_play.png";
 	[RelayCommand]
-	void RunFirestrek()
+	void RunFourPointFix()
 	{
-		double result = Firestrek.Run();
+		double result = FourPointFix.Run();
 		if (result != 0)
 		{
 			Navigation.CourseDeviation = result;
 		}
-		FirestrekStartStopText = Firestrek.IsRunning ? "Stopp" : "Start";
-		FirestrekStartStopImage = Firestrek.IsRunning ? "circle_stop.png" : "circle_play.png";
+		FourPointFixStartStopText = FourPointFix.IsRunning ? "Stopp" : "Start";
+		FourPointFixStartStopImage = FourPointFix.IsRunning ? "circle_stop.png" : "circle_play.png";
 	}
 
-	public ICommand ChooseFirestrekSideCommand { private set; get; }
+	public ICommand ChooseFourPointFixSideCommand { private set; get; }
 	[ObservableProperty]
-	Color firestrekBBButtonColor = Colors.Grey;
+	Color fourPointFixPSButtonColor = Colors.Grey;
 	[ObservableProperty]
-	Color firestrekSBButtonColor = Colors.YellowGreen;
+	Color fourPointFixSSButtonColor = Colors.YellowGreen;
 
-	void UpdateFirestrekButtons()
+	void UpdateFourPointFixButtons()
 	{
-		if (Firestrek.IsStarboardPassing) //Starboard
+		if (FourPointFix.IsStarboardPassing) //Starboard
 		{
-			FirestrekSBButtonColor = Colors.YellowGreen;
-			FirestrekBBButtonColor = Colors.Grey;
+			FourPointFixSSButtonColor = Colors.YellowGreen;
+			FourPointFixPSButtonColor = Colors.Grey;
 		}
 		else //Port
 		{
-			FirestrekSBButtonColor = Colors.Grey;
-			FirestrekBBButtonColor = Colors.IndianRed;
+			FourPointFixSSButtonColor = Colors.Grey;
+			FourPointFixPSButtonColor = Colors.IndianRed;
 		}
 	}
 
